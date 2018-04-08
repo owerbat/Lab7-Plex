@@ -70,8 +70,9 @@ public:
 	TRoot *GetEnd() { return pEnd; }
 
 	TRoot *Show(Graphics ^gr, TRoot *curr);
+	TRoot *Hide(Graphics ^gr, TRoot *curr);
 
 	virtual void Show(Graphics ^gr);
-	virtual void Hide(Graphics ^gr) {}
+	virtual void Hide(Graphics ^gr);
 	virtual void Move(Graphics ^gr, int dx, int dy) {}
 };

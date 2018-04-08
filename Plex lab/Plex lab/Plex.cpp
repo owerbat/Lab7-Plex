@@ -73,6 +73,29 @@ TRoot *TChart::Show(Graphics ^gr, TRoot *curr) {
 	return nullptr;
 }
 
+TRoot *TChart::Hide(Graphics ^gr, TRoot *curr) {
+	TPoint *tp, *pb, *pe;
+	TChart *tc;
+
+	tp = dynamic_cast<TPoint *>(curr);
+	tc = dynamic_cast<TChart *>(curr);
+
+	if (tp) {
+		tp->Hide(gr);
+		return curr;
+	}
+	if (tc) {
+		pb = dynamic_cast<TPoint *>(Hide(gr, tc->pBegin));
+		pe = dynamic_cast<TPoint *>(Hide(gr, tc->pEnd));
+
+		if (pb && pe) {
+			gr->DrawLine(Pens::White, pb->x, pb->y, pe->x, pe->y);
+			return tc->pEnd;
+		}
+	}
+	return nullptr;
+}
+
 void TChart::Show(Graphics ^gr) {
 	TCurrLine curr;
 	TPoint *tmp;
@@ -117,6 +140,70 @@ void TChart::Show(Graphics ^gr) {
 			gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
 			gr->FillEllipse(Brushes::Black, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
 			gr->FillEllipse(Brushes::Black, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
+}
+
+void TChart::Hide(Graphics ^gr) {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			gr->DrawLine(Pens::White, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+			gr->FillEllipse(Brushes::White, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
+			gr->FillEllipse(Brushes::White, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
 
 			tmp = curr.pe;
 
