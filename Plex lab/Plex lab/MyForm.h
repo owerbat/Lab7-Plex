@@ -1,4 +1,5 @@
 #pragma once
+#include "Plex.h"
 
 namespace Plex_lab {
 
@@ -15,12 +16,22 @@ namespace Plex_lab {
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
+
+		Graphics ^gr;
+		TPoint *parr;
+		TChart *plex;
+	private: System::Windows::Forms::Button^  button1;
+	public:
+
 		MyForm(void)
 		{
 			InitializeComponent();
 			//
 			//TODO: Add the constructor code here
 			//
+			gr = CreateGraphics();
+			parr = new TPoint[10];
+			plex = new TChart();
 		}
 
 	protected:
@@ -34,6 +45,8 @@ namespace Plex_lab {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::PictureBox^  pictureBox1;
+	protected:
 
 	private:
 		/// <summary>
@@ -48,18 +61,56 @@ namespace Plex_lab {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
+			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->BackColor = System::Drawing::Color::White;
+			this->pictureBox1->Location = System::Drawing::Point(3, 4);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(1071, 552);
+			this->pictureBox1->TabIndex = 0;
+			this->pictureBox1->TabStop = false;
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(1127, 28);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(75, 23);
+			this->button1->TabIndex = 1;
+			this->button1->Text = L"button1";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1169, 552);
+			this->ClientSize = System::Drawing::Size(1434, 557);
+			this->Controls->Add(this->button1);
+			this->Controls->Add(this->pictureBox1);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		parr[0].x = 10;
+		parr[0].y = 20;
+		parr[1].x = 60;
+		parr[1].y = 30;
+		plex->SetBegin(&parr[0]);
+		plex->SetEnd(&parr[1]);
+		plex->Show(gr, plex);
+	}
+	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
+		gr = pictureBox1->CreateGraphics();
+	}
 	};
 }
