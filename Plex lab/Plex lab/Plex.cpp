@@ -70,4 +70,69 @@ TRoot *TChart::Show(Graphics ^gr, TRoot *curr) {
 			return tc->pEnd;
 		}
 	}
+	return nullptr;
+}
+
+void TChart::Show(Graphics ^gr) {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+			gr->FillEllipse(Brushes::Black, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
+			gr->FillEllipse(Brushes::Black, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
 }

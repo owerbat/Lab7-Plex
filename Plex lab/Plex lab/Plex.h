@@ -4,6 +4,22 @@
 using namespace std;
 using namespace System::Drawing;
 
+
+
+
+class TRoot;
+class TPoint;
+class TChart;
+
+
+
+struct TCurrLine {
+	TChart *tc;
+	TPoint *pb;
+	TPoint *pe;
+};
+
+
 class TRoot{
 protected:
 	bool visible;
@@ -39,14 +55,6 @@ public:
 
 
 
-struct TCurrLine {
-	TRoot *ct;
-	TPoint *pb;
-	TPoint *pe;
-};
-
-
-
 class TChart :public TRoot {
 protected:
 	TRoot *pBegin;
@@ -63,7 +71,7 @@ public:
 
 	TRoot *Show(Graphics ^gr, TRoot *curr);
 
-	virtual void Show(Graphics ^gr) {}
+	virtual void Show(Graphics ^gr);
 	virtual void Hide(Graphics ^gr) {}
 	virtual void Move(Graphics ^gr, int dx, int dy) {}
 };

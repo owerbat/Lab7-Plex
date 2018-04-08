@@ -20,6 +20,7 @@ namespace Plex_lab {
 		Graphics ^gr;
 		TPoint *parr;
 		TChart *plex;
+		TChart *element;
 	private: System::Windows::Forms::Button^  button1;
 	public:
 
@@ -32,6 +33,7 @@ namespace Plex_lab {
 			gr = CreateGraphics();
 			parr = new TPoint[10];
 			plex = new TChart();
+			element = new TChart[5];
 		}
 
 	protected:
@@ -105,9 +107,20 @@ namespace Plex_lab {
 		parr[0].y = 20;
 		parr[1].x = 60;
 		parr[1].y = 30;
+		parr[2].x = 80;
+		parr[2].y = 100;
+		parr[3].x = 100;
+		parr[3].y = 20;
+
+		element[1].SetBegin(&parr[3]);
+		element[1].SetEnd(&parr[2]);
+		element[0].SetBegin(&element[1]);
+		element[0].SetEnd(&parr[1]);
 		plex->SetBegin(&parr[0]);
-		plex->SetEnd(&parr[1]);
-		plex->Show(gr, plex);
+		plex->SetEnd(&element[0]);
+
+		//plex->Show(gr, plex);
+		plex->Show(gr);
 	}
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		gr = pictureBox1->CreateGraphics();
