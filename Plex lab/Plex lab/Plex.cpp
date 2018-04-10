@@ -60,8 +60,6 @@ TRoot *TChart::Show(Graphics ^gr, TRoot *curr) {
 		return curr;
 	}
 	if (tc) {
-		//pb = dynamic_cast<TPoint *>(tc->pBegin);
-		//pe = dynamic_cast<TPoint *>(tc->pEnd);
 		pb = dynamic_cast<TPoint *>(Show(gr, tc->pBegin));
 		pe = dynamic_cast<TPoint *>(Show(gr, tc->pEnd));
 
@@ -222,4 +220,13 @@ void TChart::Hide(Graphics ^gr) {
 			}
 		}
 	}
+}
+
+void TChart::Move(Graphics ^gr, int dx, int dy) {
+	Hide(gr);
+
+	pBegin->Move(gr, dx, dy);
+	pEnd->Move(gr, dx, dy);
+
+	Show(gr);
 }

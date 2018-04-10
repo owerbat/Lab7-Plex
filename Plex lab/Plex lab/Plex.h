@@ -20,6 +20,7 @@ struct TCurrLine {
 };
 
 
+
 class TRoot{
 protected:
 	bool visible;
@@ -74,5 +75,5 @@ public:
 
 	virtual void Show(Graphics ^gr);
 	virtual void Hide(Graphics ^gr);
-	virtual void Move(Graphics ^gr, int dx, int dy) {}
+	virtual void Move(Graphics ^gr, int dx, int dy);
 };

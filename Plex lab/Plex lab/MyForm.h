@@ -22,6 +22,7 @@ namespace Plex_lab {
 		TChart *plex;
 		TChart *element;
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Button^  button3;
 	public:
 	private: System::Windows::Forms::Button^  button1;
 	public:
@@ -68,6 +69,7 @@ namespace Plex_lab {
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -100,11 +102,22 @@ namespace Plex_lab {
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
+			// button3
+			// 
+			this->button3->Location = System::Drawing::Point(1127, 156);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(75, 23);
+			this->button3->TabIndex = 3;
+			this->button3->Text = L"button3";
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1434, 557);
+			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->pictureBox1);
@@ -142,6 +155,9 @@ namespace Plex_lab {
 	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 		//plex->Hide(gr, plex);
 		plex->Hide(gr);
+	}
+	private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+		plex->Move(gr, 10, 10);
 	}
 };
 }
