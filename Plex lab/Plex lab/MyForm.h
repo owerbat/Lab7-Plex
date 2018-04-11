@@ -18,9 +18,14 @@ namespace Plex_lab {
 	public:
 
 		Graphics ^gr;
-		TPoint *parr;
+		//TPoint *parr;
 		TChart *plex;
-		TChart *element;
+		//TChart *element;
+		int x1, x2, y1, y2;
+		bool createNewLineFlag;
+		TPoint *p1, *p2;
+		int plexCounter;
+
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
 	public:
@@ -33,10 +38,10 @@ namespace Plex_lab {
 			//
 			//TODO: Add the constructor code here
 			//
-			gr = CreateGraphics();
-			parr = new TPoint[10];
+			//parr = new TPoint[10];
 			plex = new TChart();
-			element = new TChart[5];
+			//element = new TChart[5];
+			createNewLineFlag = false;
 		}
 
 	protected:
@@ -81,6 +86,9 @@ namespace Plex_lab {
 			this->pictureBox1->Size = System::Drawing::Size(1071, 552);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
+			this->pictureBox1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseDown);
+			this->pictureBox1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseMove);
+			this->pictureBox1->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseUp);
 			// 
 			// button1
 			// 
@@ -130,34 +138,106 @@ namespace Plex_lab {
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-		parr[0].x = 10;
-		parr[0].y = 20;
-		parr[1].x = 60;
-		parr[1].y = 30;
-		parr[2].x = 80;
-		parr[2].y = 100;
-		parr[3].x = 100;
-		parr[3].y = 20;
-
-		element[1].SetBegin(&parr[3]);
-		element[1].SetEnd(&parr[2]);
-		element[0].SetBegin(&element[1]);
-		element[0].SetEnd(&parr[1]);
-		plex->SetBegin(&parr[0]);
-		plex->SetEnd(&element[0]);
-
-		//plex->Show(gr, plex);
 		plex->Show(gr);
 	}
+
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		gr = pictureBox1->CreateGraphics();
 	}
+
 	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-		//plex->Hide(gr, plex);
 		plex->Hide(gr);
 	}
+
 	private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 		plex->Move(gr, 10, 10);
+	}
+
+	private: System::Void pictureBox1_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		createNewLineFlag = true;
+		x1 = x2 = e->X;
+		y1 = y2 = e->Y;
+	}
+
+	private: System::Void pictureBox1_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		if (createNewLineFlag) {
+			gr->DrawLine(Pens::White, x1, y1, x2, y2);
+			x2 = e->X;
+			y2 = e->Y;
+			gr->DrawLine(Pens::Red, x1, y1, x2, y2);
+		}
+	}
+
+	private: System::Void pictureBox1_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		createNewLineFlag = false;
+		if ((plex->GetBegin() == nullptr) && (plex->GetEnd() == nullptr)) {
+			button1->Text = "OK";
+
+			p1 = new TPoint(x1, y1);
+			p2 = new TPoint(x2, y2);
+
+			plex->SetBegin(p1);
+			plex->SetEnd(p2);
+		}
+		else {
+			button1->Text = "NOT OK";
+
+			bool find1 = plex->Find(x1, y1), find2 = plex->Find(x2, y2);
+
+			if (find1 && find2) {
+				button2->Text = "BOTH";
+			}
+			else if (find1 && !find2) {
+				p2 = new TPoint(x2, y2);
+
+				if (plex->findFlag) {
+					p1 = (TPoint *) plex->findRes->GetBegin();
+				}
+				else {
+					p1 = (TPoint *) plex->findRes->GetEnd();
+				}
+
+				TChart *tmp = new TChart();
+				tmp->SetBegin(p2);
+				tmp->SetEnd(p1);
+
+				if (plex->findFlag) {
+					plex->findRes->SetBegin(tmp);
+				}
+				else { 
+					plex->findRes->SetEnd(tmp); 
+				}
+			}
+			else if (!find1 && find2) {
+				p1 = new TPoint(x1, y1);
+
+				if (plex->findFlag) {
+					p2 = (TPoint *)plex->findRes->GetBegin();
+				}
+				else {
+					p2 = (TPoint *)plex->findRes->GetEnd();
+				}
+
+				TChart *tmp = new TChart();
+				tmp->SetBegin(p1);
+				tmp->SetEnd(p2);
+
+				if (plex->findFlag) {
+					plex->findRes->SetBegin(tmp);
+				}
+				else {
+					plex->findRes->SetEnd(tmp);
+				}
+			}
+			else {
+				button3->Text = "NO ONE";
+
+
+			}
+		}
+
+		plex->Hide(gr);
+		plex->Show(gr);
 	}
 };
 }

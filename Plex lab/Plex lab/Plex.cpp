@@ -230,3 +230,76 @@ void TChart::Move(Graphics ^gr, int dx, int dy) {
 
 	Show(gr);
 }
+
+bool TChart::Find(int targetX, int targetY) {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			if ((abs(curr.pb->x - targetX) < 10) && (abs(curr.pb->y - targetY) < 10)) {
+				findRes = curr.tc;
+				findFlag = true;
+				return true;
+			}
+
+			if ((abs(curr.pe->x - targetX) < 10) && (abs(curr.pe->y - targetY) < 10)) {
+				findRes = curr.tc;
+				findFlag = false;
+				return true;
+			}
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
+	return false;
+}

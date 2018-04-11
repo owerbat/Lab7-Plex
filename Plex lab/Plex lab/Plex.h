@@ -62,6 +62,9 @@ protected:
 	TRoot *pEnd;
 	stack<TCurrLine> st;
 public:
+	TChart *findRes;
+	bool findFlag; // it returns true if the finding point is begining of the line and false if the point is ending
+public:
 	TChart(TRoot *pb = nullptr, TRoot *pe = nullptr);
 
 	void SetBegin(TRoot *pb);
@@ -76,4 +79,6 @@ public:
 	virtual void Show(Graphics ^gr);
 	virtual void Hide(Graphics ^gr);
 	virtual void Move(Graphics ^gr, int dx, int dy);
+
+	bool Find(int targetX, int targetY);
 };
