@@ -25,9 +25,13 @@ namespace Plex_lab {
 		bool createNewLineFlag;
 		TPoint *p1, *p2;
 		int plexCounter;
+		stack<TChart *> *navigation;
+		TChart * current;
 
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  label2;
 	public:
 	private: System::Windows::Forms::Button^  button1;
 	public:
@@ -40,6 +44,9 @@ namespace Plex_lab {
 			//
 			//parr = new TPoint[10];
 			plex = new TChart();
+			current = plex;
+			current->SetActive(true);
+			navigation = new stack<TChart *>();
 			//element = new TChart[5];
 			createNewLineFlag = false;
 		}
@@ -75,6 +82,8 @@ namespace Plex_lab {
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -99,6 +108,7 @@ namespace Plex_lab {
 			this->button1->Text = L"button1";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
+			this->button1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::button1_KeyPress);
 			// 
 			// button2
 			// 
@@ -120,11 +130,31 @@ namespace Plex_lab {
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(1134, 230);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(46, 17);
+			this->label1->TabIndex = 4;
+			this->label1->Text = L"label1";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(1134, 295);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(46, 17);
+			this->label2->TabIndex = 5;
+			this->label2->Text = L"label2";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1434, 557);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
@@ -134,6 +164,7 @@ namespace Plex_lab {
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -164,15 +195,17 @@ namespace Plex_lab {
 			gr->DrawLine(Pens::White, x1, y1, x2, y2);
 			x2 = e->X;
 			y2 = e->Y;
-			gr->DrawLine(Pens::Red, x1, y1, x2, y2);
+			gr->DrawLine(Pens::Gray, x1, y1, x2, y2);
 		}
+		label1->Text = e->Button.ToString();
 	}
 
 	private: System::Void pictureBox1_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 		createNewLineFlag = false;
+		gr->DrawLine(Pens::White, x1, y1, x2, y2);
 		if ((plex->GetBegin() == nullptr) && (plex->GetEnd() == nullptr)) {
 			button1->Text = "OK";
-
+			
 			p1 = new TPoint(x1, y1);
 			p2 = new TPoint(x2, y2);
 
@@ -236,6 +269,37 @@ namespace Plex_lab {
 			}
 		}
 
+		plex->Hide(gr);
+		plex->Show(gr);
+	}
+	private: System::Void button1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+		switch (e->KeyChar) {
+		case 'q':
+			label2->Text = "q";
+			if (dynamic_cast<TChart *>(current->GetBegin())) {
+				current->SetActive(false);
+				navigation->push(current);
+				current = dynamic_cast<TChart *>(current->GetBegin());
+				current->SetActive(true);
+			}
+			break;
+		case 'w': 
+			label2->Text = "w";
+			current->SetActive(false);
+			current = navigation->top();
+			navigation->pop();
+			current->SetActive(true);
+			break;
+		case 'e': 
+			label2->Text = "e";
+			if (dynamic_cast<TChart *>(current->GetEnd())) {
+				current->SetActive(false);
+				navigation->push(current);
+				current = dynamic_cast<TChart *>(current->GetEnd());
+				current->SetActive(true);
+			}
+			break;
+		}
 		plex->Hide(gr);
 		plex->Show(gr);
 	}

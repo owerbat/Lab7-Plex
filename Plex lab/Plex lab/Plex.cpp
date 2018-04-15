@@ -135,9 +135,26 @@ void TChart::Show(Graphics ^gr) {
 		}
 
 		if (curr.pb && curr.pe) {
-			gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
-			gr->FillEllipse(Brushes::Black, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
-			gr->FillEllipse(Brushes::Black, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
+			if (curr.tc->active) {
+				gr->DrawLine(Pens::Red, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+			}
+			else {
+				gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+			}
+
+			if (curr.pb->GetActive()) {
+				gr->FillEllipse(Brushes::Red, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
+			}
+			else {
+				gr->FillEllipse(Brushes::Black, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
+			}
+
+			if (curr.pe->GetActive()) {
+				gr->FillEllipse(Brushes::Red, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
+			}
+			else {
+				gr->FillEllipse(Brushes::Black , curr.pe->x - 2, curr.pe->y - 2, 5, 5);
+			}
 
 			tmp = curr.pe;
 

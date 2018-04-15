@@ -11,8 +11,6 @@ class TRoot;
 class TPoint;
 class TChart;
 
-
-
 struct TCurrLine {
 	TChart *tc;
 	TPoint *pb;
@@ -52,6 +50,8 @@ public:
 	virtual void Show(Graphics ^gr);
 	virtual void Hide(Graphics ^gr);
 	virtual void Move(Graphics ^gr, int dx, int dy);
+
+	bool GetActive() { return active; }
 };
 
 
@@ -81,4 +81,6 @@ public:
 	virtual void Move(Graphics ^gr, int dx, int dy);
 
 	bool Find(int targetX, int targetY);
+
+	void SetActive(bool val) { active = val; }
 };
