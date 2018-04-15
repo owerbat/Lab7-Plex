@@ -219,6 +219,36 @@ namespace Plex_lab {
 
 			if (find1 && find2) {
 				button2->Text = "BOTH";
+
+				p1 = plex->FindPoint(x1, y1);
+				p2 = plex->FindPoint(x2, y2);
+
+				TChart *tmp = new TChart();
+				TPoint *tmp1 = (TPoint *)(plex->findRes->GetBegin());
+				TPoint *tmp2 = (TPoint *)(plex->findRes->GetEnd());
+
+				if (plex->findFlag) {
+					if ((p1->x == tmp1->x) && (p1->y == tmp1->y)) {
+						tmp->SetEnd(p1);
+						tmp->SetBegin(p2);
+					}
+					else if ((p2->x == tmp1->x) && (p2->y == tmp1->y)) {
+						tmp->SetEnd(p2);
+						tmp->SetBegin(p1);
+					}
+					plex->findRes->SetBegin(tmp);
+				}
+				else {
+					if ((p1->x == tmp2->x) && (p1->y == tmp2->y)) {
+						tmp->SetEnd(p1);
+						tmp->SetBegin(p2);
+					}
+					else if ((p2->x == tmp2->x) && (p2->y == tmp2->y)) {
+						tmp->SetEnd(p2);
+						tmp->SetBegin(p1);
+					}
+					plex->findRes->SetEnd(tmp);
+				}
 			}
 			else if (find1 && !find2) {
 				p2 = new TPoint(x2, y2);
@@ -285,10 +315,12 @@ namespace Plex_lab {
 			break;
 		case 'w': 
 			label2->Text = "w";
-			current->SetActive(false);
-			current = navigation->top();
-			navigation->pop();
-			current->SetActive(true);
+			if (!navigation->empty()) {
+				current->SetActive(false);
+				current = navigation->top();
+				navigation->pop();
+				current->SetActive(true);
+			}
 			break;
 		case 'e': 
 			label2->Text = "e";

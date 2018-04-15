@@ -144,7 +144,6 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Plex.h" />
-    <ClInclude Include="stack.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

@@ -81,6 +81,7 @@ public:
 	virtual void Move(Graphics ^gr, int dx, int dy);
 
 	bool Find(int targetX, int targetY);
+	TPoint *FindPoint(int targetX, int targetY);
 
 	void SetActive(bool val) { active = val; }
 };
