@@ -23,9 +23,10 @@ namespace Plex_lab {
 		//TChart *element;
 		int x1, x2, y1, y2;
 		bool createNewLineFlag;
+		//bool mouseDownFlag;
 		TPoint *p1, *p2;
-		int plexCounter;
-		stack<TChart *> *navigation;
+		//int plexCounter;
+		//stack<TChart *> *navigation;
 		TChart * current;
 
 	private: System::Windows::Forms::Button^  button2;
@@ -46,9 +47,10 @@ namespace Plex_lab {
 			plex = new TChart();
 			current = plex;
 			current->SetActive(true);
-			navigation = new stack<TChart *>();
+			//navigation = new stack<TChart *>();
 			//element = new TChart[5];
 			createNewLineFlag = false;
+			//mouseDownFlag = true;
 		}
 
 	protected:
@@ -95,6 +97,7 @@ namespace Plex_lab {
 			this->pictureBox1->Size = System::Drawing::Size(1071, 552);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
+			this->pictureBox1->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseDoubleClick);
 			this->pictureBox1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseDown);
 			this->pictureBox1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseMove);
 			this->pictureBox1->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseUp);
@@ -185,6 +188,7 @@ namespace Plex_lab {
 	}
 
 	private: System::Void pictureBox1_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		//mouseDownFlag = true;
 		createNewLineFlag = true;
 		x1 = x2 = e->X;
 		y1 = y2 = e->Y;
@@ -301,9 +305,10 @@ namespace Plex_lab {
 
 		plex->Hide(gr);
 		plex->Show(gr);
+		//mouseDownFlag = false;
 	}
 	private: System::Void button1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
-		switch (e->KeyChar) {
+		/*switch (e->KeyChar) {
 		case 'q':
 			label2->Text = "q";
 			if (dynamic_cast<TChart *>(current->GetBegin())) {
@@ -331,6 +336,22 @@ namespace Plex_lab {
 				current->SetActive(true);
 			}
 			break;
+		}
+		plex->Hide(gr);
+		plex->Show(gr);*/
+	}
+	
+	private: System::Void pictureBox1_MouseDoubleClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+		TChart *tmp = plex->Hit(e->X, e->Y);
+		if (tmp != nullptr) {
+			if (e->Button.ToString() == "Left") {
+				current->SetActive(false);
+				current = tmp;
+				current->SetActive(true);
+			}
+			if (e->Button.ToString() == "Right") {
+				tmp->SetVisible(false);
+			}
 		}
 		plex->Hide(gr);
 		plex->Show(gr);

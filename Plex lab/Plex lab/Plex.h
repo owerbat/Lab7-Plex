@@ -84,4 +84,7 @@ public:
 	TPoint *FindPoint(int targetX, int targetY);
 
 	void SetActive(bool val) { active = val; }
+	void SetVisible(bool val) { visible = val; }
+
+	TChart *Hit(int targetX, int targetY);
 };

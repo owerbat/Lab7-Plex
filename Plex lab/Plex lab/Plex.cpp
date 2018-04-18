@@ -135,11 +135,13 @@ void TChart::Show(Graphics ^gr) {
 		}
 
 		if (curr.pb && curr.pe) {
-			if (curr.tc->active) {
-				gr->DrawLine(Pens::Red, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
-			}
-			else {
-				gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+			if (curr.tc->visible) {
+				if (curr.tc->active) {
+					gr->DrawLine(Pens::Red, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+				}
+				else {
+					gr->DrawLine(Pens::Black, curr.pb->x, curr.pb->y, curr.pe->x, curr.pe->y);
+				}
 			}
 
 			if (curr.pb->GetActive()) {
@@ -370,6 +372,76 @@ TPoint *TChart::FindPoint(int targetX, int targetY) {
 			if ((abs(curr.pe->x - targetX) < 10) && (abs(curr.pe->y - targetY) < 10)) {
 				TPoint *tmp = new TPoint(curr.pe->x, curr.pe->y);
 				return tmp;
+			}
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
+	return nullptr;
+}
+
+TChart *TChart::Hit(int targetX, int targetY) {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			int a = curr.pe->y - curr.pb->y;
+			int b = curr.pb->x - curr.pe->x;
+			int c = (curr.pb->y - curr.pe->y) * curr.pb->x + (curr.pe->x - curr.pb->x) * curr.pb->y;
+			double distance = fabs(a * targetX + b * targetY + c) / sqrt(a * a + b * b);
+
+			if (distance < 10.0) {
+				return curr.tc;
 			}
 
 			tmp = curr.pe;
