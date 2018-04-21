@@ -27,7 +27,8 @@ namespace Plex_lab {
 		TPoint *p1, *p2;
 		//int plexCounter;
 		//stack<TChart *> *navigation;
-		TChart * current;
+		TChart *current;
+		TPoint *currentPoint;
 
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
@@ -215,6 +216,9 @@ namespace Plex_lab {
 
 			plex->SetBegin(p1);
 			plex->SetEnd(p2);
+
+			currentPoint = p1;
+			currentPoint->SetActive(true);
 		}
 		else {
 			button1->Text = "NOT OK";
@@ -298,8 +302,6 @@ namespace Plex_lab {
 			}
 			else {
 				button3->Text = "NO ONE";
-
-
 			}
 		}
 
@@ -353,6 +355,20 @@ namespace Plex_lab {
 				tmp->SetVisible(false);
 			}
 		}
+
+		TPoint *p = plex->HitPoint(e->X, e->Y);
+		//TPoint *p = plex->FindPoint(e->X, e->Y);
+		if (p != nullptr) {
+			if (e->Button.ToString() == "Left") {
+				currentPoint->SetActive(false);
+				currentPoint = p;
+				currentPoint->SetActive(true);
+			}
+			if (e->Button.ToString() == "Right") {
+				p->SetVisible(false);
+			}
+		}
+
 		plex->Hide(gr);
 		plex->Show(gr);
 	}

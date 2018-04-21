@@ -32,12 +32,17 @@ public:
 	virtual void Show(Graphics ^gr) = 0;
 	virtual void Hide(Graphics ^gr) = 0;
 	virtual void Move(Graphics ^gr, int dx, int dy) = 0;
+
+	void SetActive(bool val) { active = val; }
+	void SetVisible(bool val) { visible = val; }
+
+	bool GetActive() { return active; }
+	bool GetVisible() { return visible; }
 };
 
 
 
 class TPoint : public TRoot {
-//protected:
 public:
 	int x;
 	int y;
@@ -50,8 +55,6 @@ public:
 	virtual void Show(Graphics ^gr);
 	virtual void Hide(Graphics ^gr);
 	virtual void Move(Graphics ^gr, int dx, int dy);
-
-	bool GetActive() { return active; }
 };
 
 
@@ -83,8 +86,6 @@ public:
 	bool Find(int targetX, int targetY);
 	TPoint *FindPoint(int targetX, int targetY);
 
-	void SetActive(bool val) { active = val; }
-	void SetVisible(bool val) { visible = val; }
-
 	TChart *Hit(int targetX, int targetY);
+	TPoint *HitPoint(int targetX, int targetY);
 };

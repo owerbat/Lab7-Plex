@@ -2,7 +2,14 @@
 
 void TPoint::Show(Graphics ^gr) {
 	//gr->DrawEllipse(Pens::Black, x - 1, y - 1, 2, 2);
-	gr->FillEllipse(Brushes::Black, x - 2, y - 2, 5, 5);
+	if (visible) {
+		if (active) {
+			gr->FillEllipse(Brushes::LightSeaGreen, x - 2, y - 2, 5, 5);
+		}
+		else {
+			gr->FillEllipse(Brushes::Black, x - 2, y - 2, 5, 5);
+		}
+	}
 }
 
 void TPoint::Hide(Graphics ^gr) {
@@ -144,19 +151,10 @@ void TChart::Show(Graphics ^gr) {
 				}
 			}
 
-			if (curr.pb->GetActive()) {
-				gr->FillEllipse(Brushes::Red, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
-			}
-			else {
-				gr->FillEllipse(Brushes::Black, curr.pb->x - 2, curr.pb->y - 2, 5, 5);
-			}
-
-			if (curr.pe->GetActive()) {
-				gr->FillEllipse(Brushes::Red, curr.pe->x - 2, curr.pe->y - 2, 5, 5);
-			}
-			else {
-				gr->FillEllipse(Brushes::Black , curr.pe->x - 2, curr.pe->y - 2, 5, 5);
-			}
+			curr.pb->Show(gr);
+			//if (!((curr.pb->x == curr.pe->x) && (curr.pb->y == curr.pe->y))) {
+				curr.pe->Show(gr);
+			//}
 
 			tmp = curr.pe;
 
@@ -364,14 +362,16 @@ TPoint *TChart::FindPoint(int targetX, int targetY) {
 		}
 
 		if (curr.pb && curr.pe) {
-			if ((abs(curr.pb->x - targetX) < 10) && (abs(curr.pb->y - targetY) < 10)) {
-				TPoint *tmp = new TPoint(curr.pb->x, curr.pb->y);
-				return tmp;
+			if (sqrt((curr.pb->x - targetX) * (curr.pb->x - targetX) + (curr.pb->y - targetY) * (curr.pb->y - targetY)) < 10) {
+				/*TPoint *tmp = new TPoint(curr.pb->x, curr.pb->y);
+				return tmp;*/
+				return curr.pb;
 			}
 
-			if ((abs(curr.pe->x - targetX) < 10) && (abs(curr.pe->y - targetY) < 10)) {
-				TPoint *tmp = new TPoint(curr.pe->x, curr.pe->y);
-				return tmp;
+			if (sqrt((curr.pe->x - targetX) * (curr.pe->x - targetX) + (curr.pe->y - targetY) * (curr.pe->y - targetY)) < 10) {
+				/*TPoint *tmp = new TPoint(curr.pe->x, curr.pe->y);
+				return tmp;*/
+				return curr.pe;
 			}
 
 			tmp = curr.pe;
@@ -442,6 +442,77 @@ TChart *TChart::Hit(int targetX, int targetY) {
 
 			if (distance < 10.0) {
 				return curr.tc;
+			}
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
+	return nullptr;
+}
+
+TPoint *TChart::HitPoint(int targetX, int targetY) {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			double distanceB = sqrt((curr.pb->x - targetX) * (curr.pb->x - targetX) + (curr.pb->y - targetY) * (curr.pb->y - targetY));
+			double distanceE = sqrt((curr.pe->x - targetX) * (curr.pe->x - targetX) + (curr.pe->y - targetY) * (curr.pe->y - targetY));
+
+			if (distanceB < 10) {
+				return curr.pb;
+			}
+			if (distanceE < 10) {
+				return curr.pe;
 			}
 
 			tmp = curr.pe;
