@@ -18,15 +18,10 @@ namespace Plex_lab {
 	public:
 
 		Graphics ^gr;
-		//TPoint *parr;
 		TChart *plex;
-		//TChart *element;
 		int x1, x2, y1, y2;
 		bool createNewLineFlag;
-		//bool mouseDownFlag;
 		TPoint *p1, *p2;
-		//int plexCounter;
-		//stack<TChart *> *navigation;
 		TChart *current;
 		TPoint *currentPoint;
 
@@ -44,14 +39,10 @@ namespace Plex_lab {
 			//
 			//TODO: Add the constructor code here
 			//
-			//parr = new TPoint[10];
 			plex = new TChart();
 			current = plex;
 			current->SetActive(true);
-			//navigation = new stack<TChart *>();
-			//element = new TChart[5];
 			createNewLineFlag = false;
-			//mouseDownFlag = true;
 		}
 
 	protected:
@@ -112,7 +103,6 @@ namespace Plex_lab {
 			this->button1->Text = L"button1";
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
-			this->button1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::button1_KeyPress);
 			// 
 			// button2
 			// 
@@ -189,19 +179,31 @@ namespace Plex_lab {
 	}
 
 	private: System::Void pictureBox1_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		//mouseDownFlag = true;
 		createNewLineFlag = true;
 		x1 = x2 = e->X;
 		y1 = y2 = e->Y;
 	}
 
 	private: System::Void pictureBox1_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		if (createNewLineFlag) {
-			gr->DrawLine(Pens::White, x1, y1, x2, y2);
-			x2 = e->X;
-			y2 = e->Y;
-			gr->DrawLine(Pens::Gray, x1, y1, x2, y2);
+		if (e->Button.ToString() == "Left") {
+			if (createNewLineFlag) {
+				gr->DrawLine(Pens::White, x1, y1, x2, y2);
+				x2 = e->X;
+				y2 = e->Y;
+				gr->DrawLine(Pens::Gray, x1, y1, x2, y2);
+			}
 		}
+
+		if (e->Button.ToString() == "Right") {
+			TPoint *tmp = plex->FindPoint(e->X, e->Y);
+			if (tmp && tmp->GetActive()) {
+				plex->Hide(gr);
+				tmp->x = e->X;
+				tmp->y = e->Y;
+				plex->Show(gr);
+			}
+		}
+
 		label1->Text = e->Button.ToString();
 	}
 
@@ -307,40 +309,6 @@ namespace Plex_lab {
 
 		plex->Hide(gr);
 		plex->Show(gr);
-		//mouseDownFlag = false;
-	}
-	private: System::Void button1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
-		/*switch (e->KeyChar) {
-		case 'q':
-			label2->Text = "q";
-			if (dynamic_cast<TChart *>(current->GetBegin())) {
-				current->SetActive(false);
-				navigation->push(current);
-				current = dynamic_cast<TChart *>(current->GetBegin());
-				current->SetActive(true);
-			}
-			break;
-		case 'w': 
-			label2->Text = "w";
-			if (!navigation->empty()) {
-				current->SetActive(false);
-				current = navigation->top();
-				navigation->pop();
-				current->SetActive(true);
-			}
-			break;
-		case 'e': 
-			label2->Text = "e";
-			if (dynamic_cast<TChart *>(current->GetEnd())) {
-				current->SetActive(false);
-				navigation->push(current);
-				current = dynamic_cast<TChart *>(current->GetEnd());
-				current->SetActive(true);
-			}
-			break;
-		}
-		plex->Hide(gr);
-		plex->Show(gr);*/
 	}
 	
 	private: System::Void pictureBox1_MouseDoubleClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
@@ -357,7 +325,6 @@ namespace Plex_lab {
 		}
 
 		TPoint *p = plex->HitPoint(e->X, e->Y);
-		//TPoint *p = plex->FindPoint(e->X, e->Y);
 		if (p != nullptr) {
 			if (e->Button.ToString() == "Left") {
 				currentPoint->SetActive(false);
