@@ -88,4 +88,6 @@ public:
 
 	TChart *Hit(int targetX, int targetY);
 	TPoint *HitPoint(int targetX, int targetY);
+
+	void MakeVisible();
 };

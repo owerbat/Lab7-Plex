@@ -534,3 +534,67 @@ TPoint *TChart::HitPoint(int targetX, int targetY) {
 	}
 	return nullptr;
 }
+
+void TChart::MakeVisible() {
+	TCurrLine curr;
+	TPoint *tmp;
+
+	curr.tc = this;
+	curr.pb = curr.pe = nullptr;
+
+	while (!st.empty()) {
+		st.pop();
+	}
+	st.push(curr);
+
+	while (!st.empty()) {
+		curr = st.top();
+		st.pop();
+
+		while (!curr.pb) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pBegin);
+			if (tmp) {
+				curr.pb = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pBegin;
+			}
+		}
+
+		if (!curr.pe) {
+			tmp = dynamic_cast<TPoint *>(curr.tc->pEnd);
+			if (tmp) {
+				curr.pe = tmp;
+			}
+			else {
+				st.push(curr);
+				curr.tc = (TChart *)curr.tc->pEnd;
+				curr.pb = nullptr;
+				st.push(curr);
+			}
+		}
+
+		if (curr.pb && curr.pe) {
+			curr.tc->SetVisible(true);
+			curr.pb->SetVisible(true);
+			curr.pe->SetVisible(true);
+
+			tmp = curr.pe;
+
+			if (!st.empty()) {
+				curr = st.top();
+				st.pop();
+
+				if (!curr.pb) {
+					curr.pb = tmp;
+				}
+				else {
+					curr.pe = tmp;
+				}
+
+				st.push(curr);
+			}
+		}
+	}
+}

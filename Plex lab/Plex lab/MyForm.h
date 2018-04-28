@@ -99,6 +99,7 @@ namespace Plex_lab {
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::MyForm_KeyDown);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 
@@ -145,15 +146,12 @@ namespace Plex_lab {
 				plex->Show(gr);
 			}
 		}
-
-		//label1->Text = e->Button.ToString();
 	}
 
 	private: System::Void pictureBox1_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 		createNewLineFlag = false;
 		gr->DrawLine(Pens::White, x1, y1, x2, y2);
 		if ((plex->GetBegin() == nullptr) && (plex->GetEnd() == nullptr)) {
-			//button1->Text = "OK";
 			
 			p1 = new TPoint(x1, y1);
 			p2 = new TPoint(x2, y2);
@@ -165,12 +163,10 @@ namespace Plex_lab {
 			currentPoint->SetActive(true);
 		}
 		else {
-			//button1->Text = "NOT OK";
 
 			bool find1 = plex->Find(x1, y1), find2 = plex->Find(x2, y2);
 
 			if (find1 && find2) {
-				//button2->Text = "BOTH";
 
 				p1 = plex->FindPoint(x1, y1);
 				p2 = plex->FindPoint(x2, y2);
@@ -244,9 +240,6 @@ namespace Plex_lab {
 					plex->findRes->SetEnd(tmp);
 				}
 			}
-			else {
-				//button3->Text = "NO ONE";
-			}
 		}
 
 		plex->Hide(gr);
@@ -280,6 +273,12 @@ namespace Plex_lab {
 
 		plex->Hide(gr);
 		plex->Show(gr);
+	}
+	private: System::Void MyForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
+		if (e->KeyCode == Keys::Enter) {
+			plex->MakeVisible();
+			plex->Show(gr);
+		}
 	}
 };
 }
