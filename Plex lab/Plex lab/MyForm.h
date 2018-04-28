@@ -25,12 +25,12 @@ namespace Plex_lab {
 		TChart *current;
 		TPoint *currentPoint;
 
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::Button^  button3;
-	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::Label^  label2;
+
+
+
+
 	public:
-	private: System::Windows::Forms::Button^  button1;
+
 	public:
 
 		MyForm(void)
@@ -73,20 +73,15 @@ namespace Plex_lab {
 		void InitializeComponent(void)
 		{
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->label2 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// pictureBox1
 			// 
 			this->pictureBox1->BackColor = System::Drawing::Color::White;
-			this->pictureBox1->Location = System::Drawing::Point(3, 4);
+			this->pictureBox1->Location = System::Drawing::Point(3, 0);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(1071, 552);
+			this->pictureBox1->Size = System::Drawing::Size(1087, 556);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->MouseDoubleClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseDoubleClick);
@@ -94,71 +89,18 @@ namespace Plex_lab {
 			this->pictureBox1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseMove);
 			this->pictureBox1->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseUp);
 			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(1127, 28);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 1;
-			this->button1->Text = L"button1";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
-			// 
-			// button2
-			// 
-			this->button2->Location = System::Drawing::Point(1127, 94);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
-			this->button2->TabIndex = 2;
-			this->button2->Text = L"button2";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
-			// 
-			// button3
-			// 
-			this->button3->Location = System::Drawing::Point(1127, 156);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(75, 23);
-			this->button3->TabIndex = 3;
-			this->button3->Text = L"button3";
-			this->button3->UseVisualStyleBackColor = true;
-			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(1134, 230);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(46, 17);
-			this->label1->TabIndex = 4;
-			this->label1->Text = L"label1";
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(1134, 295);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(46, 17);
-			this->label2->TabIndex = 5;
-			this->label2->Text = L"label2";
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1434, 557);
-			this->Controls->Add(this->label2);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->button3);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
+			this->ClientSize = System::Drawing::Size(1091, 557);
 			this->Controls->Add(this->pictureBox1);
+			this->MaximizeBox = false;
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
@@ -204,14 +146,14 @@ namespace Plex_lab {
 			}
 		}
 
-		label1->Text = e->Button.ToString();
+		//label1->Text = e->Button.ToString();
 	}
 
 	private: System::Void pictureBox1_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 		createNewLineFlag = false;
 		gr->DrawLine(Pens::White, x1, y1, x2, y2);
 		if ((plex->GetBegin() == nullptr) && (plex->GetEnd() == nullptr)) {
-			button1->Text = "OK";
+			//button1->Text = "OK";
 			
 			p1 = new TPoint(x1, y1);
 			p2 = new TPoint(x2, y2);
@@ -223,12 +165,12 @@ namespace Plex_lab {
 			currentPoint->SetActive(true);
 		}
 		else {
-			button1->Text = "NOT OK";
+			//button1->Text = "NOT OK";
 
 			bool find1 = plex->Find(x1, y1), find2 = plex->Find(x2, y2);
 
 			if (find1 && find2) {
-				button2->Text = "BOTH";
+				//button2->Text = "BOTH";
 
 				p1 = plex->FindPoint(x1, y1);
 				p2 = plex->FindPoint(x2, y2);
@@ -303,7 +245,7 @@ namespace Plex_lab {
 				}
 			}
 			else {
-				button3->Text = "NO ONE";
+				//button3->Text = "NO ONE";
 			}
 		}
 
